@@ -1,9 +1,7 @@
 package project.algorithm.online;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 import org.apache.commons.math3.distribution.ZipfDistribution;
@@ -25,6 +23,7 @@ public class InputGenerator {
 		{
 			preShuffledList.add(i+1);
 		}
+		// Shuffle input list (to get more balanced tree)
 		Collections.shuffle(preShuffledList);
 		states = preShuffledList.toArray(new Integer[preShuffledList.size()]);
 	}
