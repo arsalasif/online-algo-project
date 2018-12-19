@@ -1,7 +1,7 @@
 # Experimental Analysis of Sequential Search Heuristics
 Online Algo Project
 
-This project is done on Java and Python.
+This project is done on Java and Python. All code is documented by comments inside code.
 
 For Java, please download Eclipse:
 https://www.eclipse.org/downloads/packages/release/neon/2/eclipse-ide-java-developers
