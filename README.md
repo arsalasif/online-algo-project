@@ -6,6 +6,8 @@ This project is done on Java and Python. All code is documented by comments insi
 For Java, please download Eclipse:
 https://www.eclipse.org/downloads/packages/release/neon/2/eclipse-ide-java-developers
 
+Java Common Math library is already included in project. Reference: http://commons.apache.org/proper/commons-math/
+
 For Python, please download Anaconda:
 https://www.anaconda.com/download/
 
