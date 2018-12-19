@@ -3,8 +3,8 @@ Online Algo Project
 
 This project is done on Java and Python. All code is documented by comments inside code.
 
-For Java, please download Eclipse:
-https://www.eclipse.org/downloads/packages/release/neon/2/eclipse-ide-java-developers
+For Java, please download Eclipse: https://www.eclipse.org/downloads/packages/release/neon/2/eclipse-ide-java-developers
+
 Java SE 9 or above is needed: https://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 Java Common Math library is already included in project. Reference: http://commons.apache.org/proper/commons-math/
