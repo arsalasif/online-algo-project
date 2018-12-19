@@ -1,109 +1,131 @@
 package project.algorithm.online;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 import org.apache.commons.math3.distribution.ZipfDistribution;
 
+// Class to generate input values and access sequences
 public class InputGenerator {
-	int num = 26;
-	int sequenceLength;
-	int count_state[];
-	double percentages[];
-	char states[];
+	int num;
+	Integer count_state[];
+	ArrayList<Double> percentages;
+	Integer states[];
 	
-	public InputGenerator(int sL)
+	public InputGenerator(int n)
 	{
-		sequenceLength = sL;
-		states = new char[num];
+		num = n;
+		states = new Integer[num];
+		ArrayList<Integer> preShuffledList = new ArrayList<Integer>();
 		
-		for(int i = 0; i < states.length; i++)
+		for(int i = 0; i < num; i++)
 		{
-			states[i] = (char)(97+i);
+			preShuffledList.add(i+1);
 		}
+		Collections.shuffle(preShuffledList);
+		states = preShuffledList.toArray(new Integer[preShuffledList.size()]);
 	}
 	
-	public ArrayList<Character> zipfGenerator(double skew)
+	// Generates zipfian access sequence given a skew factor and sequence length
+	public int[] zipfGenerator(double skew, int sequenceLength)
 	{
-		return zipfInput(skew);
+		return zipfInput(skew, sequenceLength);
 	}
 
-	public ArrayList<Character> markovLowSelfLoopGenerator()
+	// Generates Markov high self loop access sequence given sequence length
+	public int[] markovHighSelfLoopGenerator(int sequenceLength)
 	{
-		return markovInput(0.9);
-	}
-
-	public ArrayList<Character> markovMediumSelfLoopGenerator()
-	{
-		return markovInput(0.5);
-	}
-
-	public ArrayList<Character> markovHighSelfLoopGenerator()
-	{
-		return markovInput(0.1);
+		return markovInput(0.1, sequenceLength);
 	}
 	
-	public ArrayList<Character> zipfInput(double skew)
+	// Generates Markov medium self loop access sequence given sequence length
+	public int[] markovMediumSelfLoopGenerator(int sequenceLength)
 	{
-		ArrayList<Character> sequence = new ArrayList<Character>();
+		return markovInput(0.5, sequenceLength);
+	}
 
+	// Generates Markov low self loop access sequence given sequence length
+	public int[] markovLowSelfLoopGenerator(int sequenceLength)
+	{
+		return markovInput(0.9, sequenceLength);
+	}
+
+	
+	// Method to generate zipfian sequence
+	private int[] zipfInput(double skew, int sequenceLength)
+	{
+		int[] sequence = new int[sequenceLength];
+
+		// Create ZipfDistribution from Java Math library, given skew factor and number of input
 		ZipfDistribution zipf = new ZipfDistribution(num, skew);
 		
-		
 		double probabilities[][] = new double [num][num];
-	
+
+		// Get probabilities based on rank from zipfian distribution
+		double zipfian[] = new double[num];
+		for(int i = 0; i < num; i++)
+		{
+			zipfian[i] = zipf.probability(i+1);
+		}
+		
+		// Add probabilities to state transitions
 		for(int i = 0; i < probabilities.length; i++)
 		{
 			for(int j = 0; j < probabilities[i].length; j++)
 			{
-				probabilities[i][j] = zipf.probability(j+1);
+				probabilities[i][j] = zipfian[j];
 			}
 			
 		}
-		
-		int states_int[] = new int [states.length];
+
+		int states_int[] = new int [num];
 		for(int i = 0; i < states_int.length; i++)
 		{
 			states_int[i] = i;
 		}
 		
-	
-		count_state = new int [states.length];
+
+		// Keeps frequency count of states
+		count_state = new Integer[num];
+		for(int i = 0; i < num; i++)
+			count_state[i] = 0;
 	
 		int current = 0;
 		count_state[0] = 1;
-		sequence.add(states[current]);
-		for(int i =0; i < sequenceLength; i++)
+		sequence[0] = states[0];
+		// Generate access sequence
+		for(int i = 1; i < sequenceLength; i++)
 		{
+			// Use EnumeratedIntegerDistribution to get state transition 
+			// Based on state id and probability of going from that state to all other
 			EnumeratedIntegerDistribution dist   = new EnumeratedIntegerDistribution(states_int, probabilities[current]);
+			// Sample a state transition and move to that state
 			int idx = dist.sample();
 			count_state[idx]++;
+			// Assign current state to that state
 			current = idx;
-			sequence.add(states[current]);
+			// Add that state in access sequence
+			sequence[i] = states[current];
 		}
-		
-		double percentageTotal = 0;
-		percentages = new double [states.length];
-		for(int i = 0; i < states.length; i++)
+		// Get frequency percentages from freqeuncy counts
+		percentages = new ArrayList<Double>();
+		for(int i = 0; i < num; i++)
 		{
-			percentages[i] = count_state[i]*100.0/sequenceLength;
-			percentageTotal += percentages[i];
-			System.out.println(states[i] + ": " + count_state[i] + " Percentage: " + percentages[i] + "%");
+			percentages.add(count_state[i]*100.0/sequenceLength);
 		}	
-		System.out.println(percentageTotal);
-		for(int i =0; i < sequence.size(); i++)
-			System.out.print(sequence.get(i));
-		System.out.println();
 		return sequence;
 	}
 	
-	public ArrayList<Character> markovInput(double probability)
+	private int[] markovInput(double probability, int sequenceLength)
 	{
-		ArrayList<Character> sequence = new ArrayList<Character>();
-		
+		int[] sequence = new int[sequenceLength];
 		
 		double probabilities[][] = new double [num][num];
-	
+
+		// Add probabilities to state transitions
 		for(int i = 0; i < probabilities.length; i++)
 		{
 			double sum =0;
@@ -118,52 +140,58 @@ public class InputGenerator {
 			probabilities[i][i] = 1-sum; // to resolve for float errors
 			
 		}
-		int states_int[] = new int [states.length];
+		int states_int[] = new int [num];
 		for(int i = 0; i < states_int.length; i++)
 		{
 			states_int[i] = i;
 		}
-		
-	
-		count_state = new int [states.length];
+
+
+		// Keeps frequency count of states
+		count_state = new Integer[num];
+		for(int i = 0; i < num; i++)
+			count_state[i] = 0;
 	
 		int current = 0;
 		count_state[0] = 1;
-		sequence.add(states[current]);
-		for(int i =0; i < sequenceLength; i++)
+		sequence[0] = states[0];
+		// Generate access sequence
+		for(int i = 1; i < sequenceLength; i++)
 		{
+			// Use EnumeratedIntegerDistribution to get state transition 
+			// Based on state id and probability of going from that state to all other
 			EnumeratedIntegerDistribution dist   = new EnumeratedIntegerDistribution(states_int, probabilities[current]);
+			// Sample a state transition and move to that state
 			int idx = dist.sample();
 			count_state[idx]++;
+			// Assign current state to that state
 			current = idx;
-			sequence.add(states[current]);
+			// Add that state in access sequence
+			sequence[i] = states[current];
 		}
-		double percentageTotal = 0;
-		percentages = new double [states.length];
-		for(int i = 0; i < states.length; i++)
+		// Get frequency percentages from freqeuncy counts
+		percentages = new ArrayList<Double>();
+		for(int i = 0; i < num; i++)
 		{
-			percentages[i] = count_state[i]*100.0/sequenceLength;
-			percentageTotal += percentages[i];
-			System.out.println(states[i] + ": " + count_state[i] + " Percentage: " + percentages[i] + "%");
+			percentages.add(count_state[i]*100.0/sequenceLength);
 		}	
-		System.out.println(percentageTotal);
-		for(int i =0; i < sequence.size(); i++)
-			System.out.print(sequence.get(i));
-		System.out.println();
 		return sequence;
 	}
 	
-	public int[] getCountState()
+	// Get frequency counts of states
+	public Integer[] getCountState()
 	{
 		return count_state;
 	}
-	
-	public double[] getPercentages()
+
+	// Get percentage of frequencies of states
+	public ArrayList<Double> getPercentages()
 	{
 		return percentages;
 	}
-	
-	public char[] getStates()
+
+	// Get states
+	public Integer[] getStates()
 	{
 		return states;
 	}

@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+// A class that performs search using all different access sequences
+// It includes calculating access cost, rotation cost etc
 public class SearchHelper {
-	InputGeneratorLarge igLarge;
+	InputGenerator igLarge;
 	Integer[] states;
 	int staticListAccessCost;
 	int staticTreesAccessCost;
@@ -48,10 +50,11 @@ public class SearchHelper {
 	
 	public SearchHelper(int num)
 	{
-		igLarge = new InputGeneratorLarge(num);
+		igLarge = new InputGenerator(num);
 		states = igLarge.states;
 	}
 	
+	// Generate Zipfian access sequence and search using that
 	public void searchZipf(double skew, int sequenceLength)
 	{
 		int[] sequence = igLarge.zipfGenerator(skew, sequenceLength);
@@ -61,6 +64,7 @@ public class SearchHelper {
 		
 	}
 
+	// Generate Markov high self loop access sequence and search using that
 	public void searchMarkovHighSelfLoop(int sequenceLength)
 	{
 		int[] sequence = igLarge.markovHighSelfLoopGenerator(sequenceLength);
@@ -69,6 +73,7 @@ public class SearchHelper {
 		searchTrees(sequence);
 	}
 
+	// Generate Markov medium self loop access sequence and search using that
 	public void searchMarkovMediumSelfLoop(int sequenceLength)
 	{
 		int[] sequence = igLarge.markovMediumSelfLoopGenerator(sequenceLength);
@@ -77,6 +82,7 @@ public class SearchHelper {
 		searchTrees(sequence);
 	}
 
+	// Generate Markov low self loop access sequence and search using that
 	public void searchMarkovLowSelfLoop(int sequenceLength)
 	{
 		int[] sequence = igLarge.markovLowSelfLoopGenerator(sequenceLength);
@@ -85,6 +91,7 @@ public class SearchHelper {
 		searchTrees(sequence);
 	}
 	
+	// Performs search on linked list, using all search heuristics and provided access sequence
 	public void searchLinkedList(int[] sequence)
 	{
 		ArrayList<Integer> sorted_states;
@@ -105,8 +112,6 @@ public class SearchHelper {
 		{
 			sorted_states.add(sortedInput.get(i).getInput());
 		}
-		
-//		Collections.shuffle(shuffled_states);
 		
 		LinkedListCustom list = new LinkedListCustom();
 		LinkedListCustom mtfList = new LinkedListCustom();
@@ -154,6 +159,7 @@ public class SearchHelper {
 		
 	}
 	
+	// Performs search on trees, using all search heuristics and provided access sequence
 	public void searchTrees(int[] sequence)
 	{
 		ArrayList<Integer> sorted_states;
@@ -174,13 +180,6 @@ public class SearchHelper {
 		{
 			sorted_states.add(sortedInput.get(i).getInput());
 		}
-
-
-//		System.out.println(Arrays.toString(states));
-//		System.out.println(Arrays.toString(igLarge.count_state));
-//		System.out.println(Arrays.toString(sorted_states.toArray()));
-//		System.out.println();
-//		Collections.shuffle(shuffled_states);
 		
 		BinarySearchTree bst = new BinarySearchTree();
 		SplayTree mtfTree = new SplayTree();

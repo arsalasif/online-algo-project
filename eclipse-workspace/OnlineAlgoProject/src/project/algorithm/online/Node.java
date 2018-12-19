@@ -1,5 +1,6 @@
 package project.algorithm.online;
 
+// A class for node for trees
 public class Node {
     Integer key;            // key
     Node left, right;   // left and right subtrees

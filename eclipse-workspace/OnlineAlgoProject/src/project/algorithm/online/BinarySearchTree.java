@@ -7,59 +7,44 @@ public class BinarySearchTree {
         root = null;  
     } 
 	
-	// This method mainly calls insertRec() 
+	// Inserts a key into BST
     void insert(int key) { 
-       root = insertRec(root, key); 
+       root = insertKey(root, key); 
     }
-    /* A recursive function to insert a new key in BST */
-    Node insertRec(Node current, int key) { 
+
+    
+    Node insertKey(Node current, int key) { 
   
-        /* If the tree is empty, return a new node */
+        // If tree is empty, root is the new key
         if (current == null) { 
         		return new Node(key); 
         } 
   
-        /* Otherwise, recur down the tree */
+        // search using BST to find position to insert new node in
         if (key < current.key) 
-        		current.left = insertRec(current.left, key); 
+        		current.left = insertKey(current.left, key); 
         else if (key > current.key) 
-        		current.right = insertRec(current.right, key); 
-  
-        /* return the (unchanged) node pointer */
+        		current.right = insertKey(current.right, key); 
         return current; 
-    } 
-    
-    // This method mainly calls InorderRec() 
-    void inorder()  { 
-       inorderRec(root); 
-    } 
-  
-    // A utility function to do inorder traversal of BST 
-    void inorderRec(Node root) { 
-        if (root != null) { 
-            inorderRec(root.left); 
-            System.out.println(root.key); 
-            inorderRec(root.right); 
-        } 
     } 
     
     public int search(int key)
     {
-    		return searchRec(root, key, 0);
+    		return searchKey(root, key, 0);
     }
     
-    // A utility function to search a given key in BST 
-    public int searchRec(Node current, int key, int accessCost) 
+    // Performs search on BST, returns access cost when searched node is found
+    public int searchKey(Node current, int key, int accessCost) 
     { 
-        // Base Cases: root is null or key is present at root 
+    		// if key found at node
         if (current==null || current.key==key) 
             return accessCost; 
       
         // val is greater than root's key 
         if (current.key > key) 
-            return searchRec(current.left, key, accessCost+1); 
+            return searchKey(current.left, key, accessCost+1); 
       
         // val is less than root's key 
-        return searchRec(current.right, key, accessCost+1); 
+        return searchKey(current.right, key, accessCost+1); 
     } 
 }

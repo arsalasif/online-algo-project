@@ -10,43 +10,29 @@ public class SplayTree {
     SplayTree() {  
         root = null;  
     } 
-	
-	// This method mainly calls insertRec() 
+
+	// Inserts a key into Splay tree
     void insert(int key) { 
-       root = insertRec(root, key); 
+       root = insertKey(root, key); 
     }
-    /* A recursive function to insert a new key in BST */
-    Node insertRec(Node current, int key) { 
-  
-        /* If the tree is empty, return a new node */
+    
+    Node insertKey(Node current, int key) { 
+    	  
+        // If tree is empty, root is the new key
         if (current == null) { 
         		return new Node(key); 
         } 
   
-        /* Otherwise, recur down the tree */
+        // search using BST to find position to insert new node in
         if (key < current.key) 
-        		current.left = insertRec(current.left, key); 
+        		current.left = insertKey(current.left, key); 
         else if (key > current.key) 
-        		current.right = insertRec(current.right, key); 
-  
-        /* return the (unchanged) node pointer */
+        		current.right = insertKey(current.right, key); 
         return current; 
-    } 
+    }
     
-    // This method mainly calls InorderRec() 
-    void inorder()  { 
-       inorderRec(root); 
-    } 
-  
-    // A utility function to do inorder traversal of BST 
-    void inorderRec(Node root) { 
-        if (root != null) { 
-            inorderRec(root.left); 
-            System.out.println(root.key); 
-            inorderRec(root.right); 
-        } 
-    } 
-    
+    // Print tree by doing a BFS search
+    // Prints each node by level
     void bfs()
     {
     		Queue<Node> queue = new LinkedList<Node>() ;
@@ -72,19 +58,30 @@ public class SplayTree {
     	    }
     }
     
+    
+    // Performs MTF search
     public int searchMTF(int key)
     {
 		rotationCost = 0;
-    		int cost = searchRec(root, key, 0);
+		// Get the access cost first
+    		int cost = searchKey(root, key, 0);
+    		
+    		// Move the accessed node to front
     		root = splay(root, key);
     		return cost;
     }
     
+    // searches with Transpose heuristic
     public int searchTranspose(int key)
     {
     		rotationCost = 0;
-    		int cost = searchRec(root, key, 0);
+    		// Get the access cost first
+    		int cost = searchKey(root, key, 0);
+    		
+    		// Find grandparent of accessed node
     		Node grandParent = searchGrandParent(root, key);
+    		
+    		// Find parent of accessed node and use it to swap accessed node with parent using splaying
     		if(grandParent.right != null)
     		{
         		if(grandParent.right.left != null && grandParent.right.left.key == key)
@@ -116,30 +113,31 @@ public class SplayTree {
     		return cost;
     }
     
+    // basic binary search
     public int search(int key)
     {
-    		return searchRec(root, key, 0);
+    		return searchKey(root, key, 0);
     }
     
-    // A utility function to search a given key in BST 
-    public int searchRec(Node current, int key, int accessCost) 
+    // Performs binary search, returns access cost when searched node is found
+    public int searchKey(Node current, int key, int accessCost) 
     { 
-        // Base Cases: root is null or key is present at root 
+    		// if key found at node
         if (current==null || current.key==key) 
             return accessCost; 
       
         // val is greater than root's key 
         if (current.key > key) 
-            return searchRec(current.left, key, accessCost+1); 
+            return searchKey(current.left, key, accessCost+1); 
       
         // val is less than root's key 
-        return searchRec(current.right, key, accessCost+1); 
+        return searchKey(current.right, key, accessCost+1); 
     } 
     
-    // A utility function to search a given key in BST 
+    // Searches for grandparent node and returns it
     public Node searchGrandParent(Node current, int key) 
     { 
-        // Base Cases: root is null or key is present at root 
+    		// if grandparent is root
         if (current==null || current.key==key) 
             return current; 
         
@@ -166,6 +164,11 @@ public class SplayTree {
         return searchGrandParent(current.right, key); 
     } 
     
+    // Splay function
+    // Taken originally from
+    // https://algs4.cs.princeton.edu/33balanced/SplayBST.java.html
+    // To make sure there were no errors in splaying function
+    // Edited later on for this project
     private Node splay(Node h, Integer key) {
         if (h == null) return null;
 
@@ -218,7 +221,7 @@ public class SplayTree {
     }
     
     
- // right rotate
+    // right rotation
     private Node rotateRight(Node h) {
     		rotationCost++;
         Node x = h.left;
@@ -227,7 +230,7 @@ public class SplayTree {
         return x;
     }
 
-    // left rotate
+    // left rotation
     private Node rotateLeft(Node h) {
 		rotationCost++;
         Node x = h.right;

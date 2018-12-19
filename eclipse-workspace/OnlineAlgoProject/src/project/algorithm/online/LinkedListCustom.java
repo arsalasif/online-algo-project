@@ -1,8 +1,10 @@
 package project.algorithm.online;
 
+// A class for LinkedList
 public class LinkedListCustom {
 	LinkedListNode head;
 	
+	// Add a node to LinkedList
 	public void add(int k)
 	{
 		if(head == null)
@@ -20,6 +22,7 @@ public class LinkedListCustom {
 		}
 	}
 	
+	// Search the linked list and return access cost
 	public int search(int k)
 	{
 		int accessCost = 0;
@@ -32,6 +35,7 @@ public class LinkedListCustom {
 		return accessCost;
 	}
 	
+	// Print the linked list
 	public void print()
 	{
 		LinkedListNode temp = head;
@@ -42,6 +46,7 @@ public class LinkedListCustom {
 		}
 	}
 	
+	// Search the linked list using MTF and get access cost
 	public int searchMoveToFront(int k)
 	{
 		if(head.key == k)
@@ -53,11 +58,13 @@ public class LinkedListCustom {
 			accessCost++;
 			prev = prev.next;
 		}
+		// Move the accessed node to front
 		moveToFront(k, prev);
 		
 		return accessCost;
 	}
 	
+	// Move the accessed node to front
 	public void moveToFront(int k, LinkedListNode prev)
 	{
 		LinkedListNode accessNode = prev.next;
@@ -70,7 +77,8 @@ public class LinkedListCustom {
 		accessNode.next = head;
 		head = accessNode;
 	}
-	
+
+	// Search the linked list using Transpose and get access cost
 	public int searchTranspose(int k)
 	{
 		if(head.key == k)
@@ -84,6 +92,7 @@ public class LinkedListCustom {
 			grandParent = parent;
 			parent = parent.next;
 		}
+		// if parent is root then just do MTF, else do transpose
 		if(head == parent)
 			moveToFront(k, head);
 		else transpose(k, grandParent);
@@ -91,6 +100,7 @@ public class LinkedListCustom {
 		return accessCost;
 	}
 
+	// Swap accessed node with parent i.e transpose
 	public void transpose(int k, LinkedListNode grandParent)
 	{
 		LinkedListNode parent = grandParent.next;
