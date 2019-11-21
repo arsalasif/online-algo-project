@@ -14,5 +14,5 @@ Instructions:
 1. Install Java as noted before.
 2. If you want to reproduce output, run the Java project and it will create new CSV files. Note that it is not exactly the same on each run due to random nature of probabilties. However, it follows similar trends.
 
-# For more information, read project report.
+For more information, read project report.
 
