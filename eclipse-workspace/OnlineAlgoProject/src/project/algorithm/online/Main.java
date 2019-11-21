@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class Main {
 	
 	// Sets path to ipython-workspace, no need to edit this if project was cloned from GitHub
-	public static String path = Paths.get("").toAbsolutePath().toString()+"/ipython-workspace/";
+	public static String path = Paths.get("").toAbsolutePath().toString();
 
 	// Maintains lists of all access and rotation costs (i.e for each item in sequence list)
 	// This is done to write all costs together in csv files
